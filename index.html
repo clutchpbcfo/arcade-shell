@@ -264,6 +264,39 @@
       </div>
     </div>
 
+    <!-- HERO: NIL -->
+    <div class="hero" style="background:radial-gradient(120% 140% at 82% 18%,#ff5fa21f,transparent 60%),linear-gradient(180deg,#17112b,#0c0a16)">
+      <div class="left">
+        <div class="tag" style="color:#FF5FA2">CARD ROOM · NEW · NOW LIVE</div>
+        <h2>NIL<span style="color:#FF5FA2">♠</span></h2>
+        <p><b style="color:var(--ink)">Bid nothing, take it all.</b> Social spades — you and a partner versus the table. Trump, stack your tricks, don't choke. The on-ramp into the card room.</p>
+        <div class="cta">
+          <div class="btn" style="border-color:#FF5FA2;background:linear-gradient(180deg,#ff5fa233,#ff5fa211);color:#FF5FA2" id="playNil">▶ ENTER THE CARD ROOM</div>
+          <div class="btn" id="playNilFree">PLAY FREE</div>
+        </div>
+      </div>
+      <div class="right">
+        <canvas id="nilCanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="badge-fair" style="color:#FF5FA2">♠ PROVABLY FAIR</div>
+      </div>
+    </div>
+
+    <!-- HERO: STAK -->
+    <div class="hero" style="background:radial-gradient(120% 140% at 80% 18%,#37d58c16,transparent 60%),linear-gradient(180deg,#0e1626,#0b0d16)">
+      <div class="left">
+        <div class="tag" style="color:#37D58C">● SHIPPED · PLAYABLE NOW</div>
+        <h2>STAK</h2>
+        <p><b style="color:var(--ink)">One tap. One tower. One more go.</b> Stack the blocks, nail the rhythm, chase the perfect run. Our shipped game — proof the arcade builds and launches, not just pitches.</p>
+        <div class="cta">
+          <div class="btn" style="border-color:#37D58C;background:linear-gradient(180deg,#37d58c33,#37d58c11);color:#37D58C" id="playStak">▶ PLAY FREE · stakit.app</div>
+        </div>
+      </div>
+      <div class="right">
+        <canvas id="stakCanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="badge-fair" style="color:#37D58C">▤ HOW HIGH CAN YOU STACK?</div>
+      </div>
+    </div>
+
     <!-- FLOOR / CABINETS -->
     <div class="floor" id="floor"></div>
 
@@ -327,7 +360,7 @@ const GAMES = [
   {key:"PULSE", glyph:"⟁", color:"#6FE3FF", rings:["free","skill"], players:"1.2k", tag:"REFLEX", status:"LIVE", url:"https://clutchpbcfo.github.io/pulse"},
   {key:"GMBIT", glyph:"♞", color:"#8B6CFF", rings:["free","skill"], players:"640", tag:"CHESS · 3D", status:"LIVE", url:"https://clutchpbcfo.github.io/gmbit"},
   {key:"STAK",  glyph:"▤", color:"#37D58C", rings:["free","skill"], players:"880", tag:"STACK · iOS", status:"LIVE", url:"https://stakit.app"},
-  {key:"SPADES",glyph:"♠", color:"#FF5FA2", rings:["free","skill","wager"], players:"410", tag:"CARD ROOM", status:"SOON", url:null},
+  {key:"NIL",   glyph:"♠", color:"#FF5FA2", rings:["free","skill","wager"], players:"410", tag:"CARD ROOM", status:"LIVE", url:"https://clutchpbcfo.github.io/nil"},
   {key:"NERVE", glyph:"◈", color:"#FFC83D", rings:["free","wager"], players:"2.0k", tag:"SIGNATURE", status:"LIVE", url:"../nerve/index.html"},
   {key:"POKER", glyph:"♣", color:"#FF4D67", rings:["wager"], players:"—", tag:"HOLD'EM · OMAHA", status:"PHASE 2", url:null},
 ];
@@ -470,6 +503,92 @@ addEventListener('resize',sizeN);
 setTimeout(()=>{ sizeN(); nerve(); }, 100);
 document.getElementById('watchNerve').onclick=()=>location.href='../nerve/index.html';
 document.getElementById('playNerveFree').onclick=()=>location.href='../nerve/index.html';
+
+/* ============ NIL HERO — fanned spades ============ */
+(function(){
+  const lc=document.getElementById('nilCanvas'); if(!lc) return;
+  const x=lc.getContext('2d'); let W=0,H=0;
+  function size(){const r=lc.getBoundingClientRect(); lc.width=r.width; lc.height=r.height; W=r.width; H=r.height;}
+  function spade(cx,cy,s,fill){
+    x.save(); x.translate(cx,cy); x.scale(s,s); x.fillStyle=fill;
+    x.beginPath(); x.moveTo(0,-12); x.lineTo(9,2.5); x.lineTo(-9,2.5); x.closePath(); x.fill();
+    x.beginPath(); x.arc(-5,2.5,5,0,Math.PI*2); x.fill();
+    x.beginPath(); x.arc(5,2.5,5,0,Math.PI*2); x.fill();
+    x.beginPath(); x.moveTo(-3.4,5.5); x.quadraticCurveTo(0,5.5,-0.3,11); x.lineTo(-2.8,11); x.closePath(); x.fill();
+    x.beginPath(); x.moveTo(3.4,5.5); x.quadraticCurveTo(0,5.5,0.3,11); x.lineTo(2.8,11); x.closePath(); x.fill();
+    x.restore();
+  }
+  function rcard(cx,cy,ang,w,h,face){
+    x.save(); x.translate(cx,cy); x.rotate(ang);
+    const r=Math.max(6,w*0.12);
+    x.beginPath();
+    x.moveTo(-w/2+r,-h/2);
+    x.arcTo(w/2,-h/2,w/2,h/2,r); x.arcTo(w/2,h/2,-w/2,h/2,r);
+    x.arcTo(-w/2,h/2,-w/2,-h/2,r); x.arcTo(-w/2,-h/2,w/2,-h/2,r); x.closePath();
+    x.fillStyle='#f6f7fb'; x.shadowColor='rgba(0,0,0,.55)'; x.shadowBlur=14; x.shadowOffsetY=5; x.fill();
+    x.shadowBlur=0; x.shadowOffsetY=0; x.lineWidth=1; x.strokeStyle='#dde1f0'; x.stroke();
+    spade(0,-h*0.03, face?(w*0.05):(w*0.032), face?'#FF5FA2':'#171a2c');
+    x.restore();
+  }
+  const pips=[]; for(let i=0;i<8;i++) pips.push({px:Math.random(),py:Math.random(),s:.4+Math.random()*.7,v:.15+Math.random()*.35});
+  function frame(){
+    if(!W){ size(); if(!W){requestAnimationFrame(frame); return;} }
+    const t=performance.now()/1000;
+    x.clearRect(0,0,W,H);
+    const g=x.createRadialGradient(W*0.55,H*0.58,8,W*0.55,H*0.58,Math.max(W,H)*0.62);
+    g.addColorStop(0,'rgba(255,95,162,0.16)'); g.addColorStop(1,'rgba(255,95,162,0)');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    pips.forEach(p=>{ p.py-=0.0016*p.v; if(p.py<-0.12){p.py=1.12;p.px=Math.random();}
+      x.globalAlpha=0.10+0.05*Math.sin(t+p.px*9); spade(p.px*W,p.py*H,p.s*1.3,'#FF5FA2'); });
+    x.globalAlpha=1;
+    const cx=W*0.54, cy=H*0.66, sway=Math.sin(t*0.7)*0.05;
+    const n=4, spread=0.30+Math.sin(t*0.55)*0.025;
+    const cw=Math.min(W*0.42,H*0.52), ch=cw*1.4;
+    for(let i=0;i<n;i++){ const f=i-(n-1)/2, a=f*spread+sway;
+      const ox=Math.sin(a)*cw*0.72, oy=(1-Math.cos(a))*cw*0.72+f*f*1.5;
+      rcard(cx+ox,cy+oy,a,cw,ch,i===Math.round((n-1)/2)); }
+    requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size); setTimeout(()=>{ size(); frame(); },130);
+  function go(){ try{window.open('https://clutchpbcfo.github.io/nil','_blank');}catch(e){location.href='https://clutchpbcfo.github.io/nil';} }
+  const a=document.getElementById('playNil'); if(a)a.onclick=go;
+  const b=document.getElementById('playNilFree'); if(b)b.onclick=go;
+})();
+
+/* ============ STAK HERO — stacking tower ============ */
+(function(){
+  const sc=document.getElementById('stakCanvas'); if(!sc) return;
+  const x=sc.getContext('2d'); let W=0,H=0;
+  function size(){const r=sc.getBoundingClientRect(); sc.width=r.width; sc.height=r.height; W=r.width; H=r.height;}
+  const cols=['#4A7BFF','#6A5BFF','#9B5BFF','#E24BD0','#FF4D8A','#FF5A4D','#FF8A3D','#FFC83D'];
+  function rr(cx,cy,w,h,r,fill){
+    x.beginPath();
+    x.moveTo(cx-w/2+r,cy-h/2);
+    x.arcTo(cx+w/2,cy-h/2,cx+w/2,cy+h/2,r); x.arcTo(cx+w/2,cy+h/2,cx-w/2,cy+h/2,r);
+    x.arcTo(cx-w/2,cy+h/2,cx-w/2,cy-h/2,r); x.arcTo(cx-w/2,cy-h/2,cx+w/2,cy-h/2,r); x.closePath();
+    x.fillStyle=fill; x.shadowColor=fill; x.shadowBlur=16; x.fill(); x.shadowBlur=0;
+  }
+  function frame(){
+    if(!W){ size(); if(!W){requestAnimationFrame(frame); return;} }
+    const t=performance.now()/1000, n=cols.length;
+    x.clearRect(0,0,W,H);
+    const g=x.createRadialGradient(W*0.55,H*0.5,8,W*0.55,H*0.5,Math.max(W,H)*0.6);
+    g.addColorStop(0,'rgba(55,213,140,0.10)'); g.addColorStop(1,'rgba(55,213,140,0)');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    const bh=Math.max(8,Math.min(H*0.082,15)), gap=bh*0.5, bw=Math.min(W*0.52,150);
+    const cx=W*0.55, baseY=H*0.9, bob=Math.sin(t*1.1)*2;
+    for(let i=0;i<n;i++){
+      const cy=baseY-i*(bh+gap)+bob; const w=bw*(1-i*0.012);
+      const ox=(i===n-1)?Math.sin(t*1.7)*bw*0.36:0;
+      rr(cx+ox,cy,w,bh,bh*0.34,cols[i]);
+    }
+    requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size); setTimeout(()=>{ size(); frame(); },150);
+  function go(){ try{window.open('https://stakit.app','_blank');}catch(e){location.href='https://stakit.app';} }
+  const a=document.getElementById('playStak'); if(a)a.onclick=go;
+})();
+
 document.getElementById('connect').onclick=function(){ this.textContent='● CONNECTED'; this.style.borderColor='var(--green)'; this.style.color='var(--green)'; };
 
 /* ============ LIVE-FEEL: nudge the balance / counts ============ */
@@ -478,7 +597,7 @@ const DESC={
   PULSE:'One-tap reflex. The hook — free top-of-funnel, skill-PvP ready, server-authoritative anti-cheat already shipped.',
   GMBIT:'3D crypto chess. Premium skill + spectacle. Online 1v1 PvP + clocks, live in production.',
   STAK:'Stack to the beat. Async tournaments and daily runs — the retention loop.',
-  SPADES:'Social card game — the on-ramp into the card room and Ring 2.',
+  NIL:'Bid nothing, take it all. Social spades — the on-ramp into the card room and Ring 2.',
   NERVE:'Signature game. Hold the rising curve, cash before the break, last nerve takes the pot. Same game free or for real.',
   POKER:"Hold'em & Omaha — the Ring-2 anchor. Phase 2; earn it."
 };
