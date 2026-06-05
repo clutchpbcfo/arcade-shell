@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>INSERT COIN — Arcade Shell (working title)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ BRAND TOKENS (rebrand by editing these) ============ */
+  :root{
+    --bg:#08080F; --bg2:#0E0E1A; --panel:#12122180; --panel-solid:#141426;
+    --line:#23233F; --line-2:#2E2E50;
+    --ink:#F3F3FB; --muted:#8C8CB0; --faint:#55557A;
+    --free:#6FE3FF;          /* ring 0 accent */
+    --skill:#FF5FA2;         /* ring 1 accent */
+    --wager:#FFC83D;         /* ring 2 accent */
+    --brand:#8B6CFF;         /* primary */
+    --brand-2:#FF3D81;
+    --gold:#FFC83D; --green:#37D58C; --red:#FF4D67;
+    --accent:var(--free);    /* current floor accent (JS swaps) */
+    --glow:0 0 24px;
+    --fdisplay:'Chakra Petch','Arial Narrow',system-ui,sans-serif;
+    --fmono:'JetBrains Mono',ui-monospace,'Consolas',monospace;
+    --r:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(1200px 700px at 78% -8%, #16162e 0%, var(--bg) 55%), var(--bg);
+    color:var(--ink); font-family:var(--fmono);
+    overflow-x:hidden; -webkit-font-smoothing:antialiased;
+    transition:background .6s ease;
+  }
+  body[data-floor="skill"]{background:radial-gradient(1200px 700px at 78% -8%, #2a1430 0%, var(--bg) 58%), var(--bg)}
+  body[data-floor="wager"]{background:radial-gradient(1200px 760px at 80% -10%, #2e2410 0%, #0a0a07 60%), #0a0a07}
+  canvas#bg{position:fixed; inset:0; z-index:0; opacity:.55; pointer-events:none}
+  .scanlines{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.35;
+    background:repeating-linear-gradient(to bottom, transparent 0 2px, #00000055 2px 3px)}
+  .wrap{position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:0 22px 60px}
+
+  /* ============ BOOT ============ */
+  #boot{position:fixed; inset:0; z-index:50; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px;
+    transition:opacity .6s ease, visibility .6s}
+  #boot.off{opacity:0; visibility:hidden}
+  .boot-mark{font-family:var(--fdisplay); font-weight:700; letter-spacing:.06em; font-size:clamp(34px,7vw,72px); color:var(--ink)}
+  .boot-mark b{color:var(--gold)}
+  .coin-slot{display:flex; align-items:center; gap:16px; cursor:pointer; padding:16px 26px;
+    border:1px solid var(--line-2); border-radius:999px; background:#0c0c18;
+    box-shadow:var(--glow) #8b6cff22; transition:transform .15s, box-shadow .3s}
+  .coin-slot:hover{transform:translateY(-2px); box-shadow:var(--glow) #8b6cff55}
+  .coin{width:30px;height:30px;border-radius:50%;background:
+    radial-gradient(circle at 35% 30%, #ffe49a, var(--gold) 60%, #b8860b);
+    box-shadow:0 0 14px #ffc83d88; animation:spin 3s linear infinite}
+  @keyframes spin{to{transform:rotateY(360deg)}}
+  .coin-slot span{font-family:var(--fdisplay); font-weight:600; letter-spacing:.22em; font-size:15px}
+  .boot-sub{color:var(--faint); font-size:12px; letter-spacing:.18em}
+  .blink{animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  /* ============ TOP BAR ============ */
+  .topbar{display:flex; align-items:center; gap:18px; padding:20px 0 16px; flex-wrap:wrap}
+  .logo{font-family:var(--fdisplay); font-weight:700; font-size:22px; letter-spacing:.04em; display:flex; align-items:center; gap:10px}
+  .logo .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  .logo b{color:var(--gold)}
+  .logo .wt{font-family:var(--fmono); font-size:9px; color:var(--faint); letter-spacing:.18em; align-self:flex-start; margin-top:2px}
+  .onair{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.18em; color:var(--red); font-weight:600}
+  .onair .pulse{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red); animation:throb 1.4s ease-in-out infinite}
+  @keyframes throb{50%{transform:scale(1.5);opacity:.5}}
+  .spacer{flex:1}
+  .bal{display:flex; align-items:center; gap:9px; padding:9px 15px; border:1px solid var(--line); border-radius:999px; background:var(--panel); font-size:13px}
+  .bal .c{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #ffe49a, var(--gold) 60%, #b8860b)}
+  .bal b{color:var(--gold); font-weight:600}
+  .btn{font-family:var(--fdisplay); font-weight:600; letter-spacing:.08em; font-size:13px; cursor:pointer;
+    padding:11px 18px; border-radius:999px; border:1px solid var(--brand); color:var(--ink);
+    background:linear-gradient(180deg,#8b6cff33,#8b6cff11); transition:.2s}
+  .btn:hover{background:#8b6cff44; box-shadow:var(--glow) #8b6cff66; transform:translateY(-1px)}
+
+  /* ============ TICKER ============ */
+  .ticker{margin:6px 0 26px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    overflow:hidden; white-space:nowrap; padding:9px 0; position:relative}
+  .ticker .row{display:inline-block; padding-left:100%; animation:slide 26s linear infinite; font-size:12px; color:var(--muted)}
+  .ticker .row span{margin:0 26px}
+  .ticker .hot{color:var(--gold)} .ticker .live{color:var(--green)} .ticker .red{color:var(--red)}
+  @keyframes slide{to{transform:translateX(-100%)}}
+
+  /* ============ RING SELECTOR ============ */
+  .rings{display:flex; gap:0; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:8px; background:var(--panel)}
+  .ring{flex:1; padding:16px 18px; cursor:pointer; border-right:1px solid var(--line); transition:.25s; position:relative}
+  .ring:last-child{border-right:none}
+  .ring .n{font-family:var(--fmono); font-size:10px; letter-spacing:.2em; color:var(--faint)}
+  .ring .t{font-family:var(--fdisplay); font-weight:700; font-size:18px; margin-top:3px}
+  .ring .d{font-size:11px; color:var(--muted); margin-top:3px}
+  .ring[data-r="free"].on{background:linear-gradient(180deg,#6fe3ff22,transparent); box-shadow:inset 0 -3px 0 var(--free)}
+  .ring[data-r="skill"].on{background:linear-gradient(180deg,#ff5fa222,transparent); box-shadow:inset 0 -3px 0 var(--skill)}
+  .ring[data-r="wager"].on{background:linear-gradient(180deg,#ffc83d22,transparent); box-shadow:inset 0 -3px 0 var(--wager)}
+  .ring.on .n{color:var(--accent)}
+  .floor-note{font-size:11px; color:var(--muted); margin:0 0 22px; letter-spacing:.04em; min-height:16px}
+  .floor-note b{color:var(--accent)}
+
+  /* ============ HERO (NERVE) ============ */
+  .hero{position:relative; border:1px solid var(--line-2); border-radius:var(--r); overflow:hidden; margin-bottom:24px;
+    background:linear-gradient(120deg,#15122b 0%, #0c0c18 60%); min-height:230px; display:flex}
+  .hero .left{padding:26px 28px; display:flex; flex-direction:column; justify-content:center; gap:10px; flex:1; z-index:2}
+  .hero .tag{font-size:10px; letter-spacing:.24em; color:var(--wager)}
+  .hero h2{font-family:var(--fdisplay); font-weight:700; font-size:clamp(30px,5vw,46px); line-height:.95; letter-spacing:.01em}
+  .hero p{color:var(--muted); font-size:13px; max-width:430px}
+  .hero .cta{display:flex; gap:12px; margin-top:8px; flex-wrap:wrap}
+  .hero .right{position:relative; width:42%; min-width:240px}
+  #nerveCanvas{position:absolute; inset:0; width:100%; height:100%}
+  .hero .mult{position:absolute; right:20px; top:18px; font-family:var(--fdisplay); font-weight:700; font-size:34px; color:var(--gold); text-shadow:0 0 18px #ffc83d66; z-index:3}
+  .badge-fair{position:absolute; left:20px; bottom:16px; font-size:10px; letter-spacing:.12em; color:var(--green); z-index:3}
+
+  /* ============ FLOOR / CABINETS ============ */
+  .floor{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:18px}
+  .cab{position:relative; border:1px solid var(--line); border-radius:var(--r); overflow:hidden;
+    background:var(--panel-solid); transition:transform .2s, box-shadow .3s, border-color .3s; min-height:248px;
+    display:flex; flex-direction:column}
+  .cab:hover{transform:translateY(-4px); border-color:var(--line-2); box-shadow:0 18px 40px #00000066}
+  .cab .screen{height:118px; position:relative; overflow:hidden;
+    background:linear-gradient(135deg,#1b1b34,#0c0c18); display:flex; align-items:center; justify-content:center}
+  .cab .screen .glyph{font-family:var(--fdisplay); font-weight:700; font-size:46px; letter-spacing:.04em; opacity:.92}
+  .cab .screen::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 3px,#0000000f 3px 4px)}
+  .cab .body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:8px; flex:1}
+  .cab .name{font-family:var(--fdisplay); font-weight:700; font-size:18px; display:flex; align-items:center; gap:8px}
+  .cab .meta{display:flex; gap:10px; align-items:center; font-size:11px; color:var(--muted)}
+  .cab .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .tagpill{font-size:9px; letter-spacing:.12em; padding:3px 8px; border-radius:999px; border:1px solid var(--line-2); color:var(--muted)}
+  .cab .actions{margin-top:auto; display:flex; gap:8px}
+  .mini{flex:1; text-align:center; font-family:var(--fdisplay); font-weight:600; letter-spacing:.06em; font-size:12px;
+    padding:9px 6px; border-radius:10px; cursor:pointer; border:1px solid var(--line-2); transition:.18s; color:var(--ink)}
+  .mini.free:hover{border-color:var(--free); color:var(--free); box-shadow:var(--glow) #6fe3ff33}
+  .mini.coin{display:flex; align-items:center; justify-content:center; gap:7px; border-color:#5a4a16; color:var(--gold); background:#1c1708}
+  .mini.coin:hover{border-color:var(--gold); box-shadow:var(--glow) #ffc83d44}
+  .mini .ic{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe49a,var(--gold) 60%,#b8860b)}
+  /* dim cabinets not available on the current floor */
+  .cab.dim{opacity:.4; filter:grayscale(.5)}
+  .cab.dim .actions{display:none}
+  .cab .lock{display:none; font-size:10px; color:var(--faint); margin-top:auto; letter-spacing:.08em}
+  .cab.dim .lock{display:block}
+  /* STAKES MODE (after insert coin) */
+  .cab.live-stakes{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold), 0 18px 50px #ffc83d22}
+  .cab.live-stakes .screen{background:linear-gradient(135deg,#2a2208,#140f02)}
+  .stakes{display:none; gap:6px; margin-top:8px; flex-wrap:wrap}
+  .cab.live-stakes .stakes{display:flex}
+  .cab.live-stakes .actions{display:none}
+  .chip{font-size:11px; padding:6px 11px; border-radius:8px; border:1px solid #5a4a16; color:var(--gold); cursor:pointer; transition:.15s}
+  .chip:hover{background:var(--gold); color:#1a1400}
+  .realbadge{display:none; align-items:center; gap:6px; font-size:9px; letter-spacing:.14em; color:var(--gold)}
+  .cab.live-stakes .realbadge{display:flex}
+  .realbadge .rb{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:throb 1.3s infinite}
+  /* falling coin animation */
+  .dropcoin{position:fixed; width:22px;height:22px;border-radius:50%; z-index:40; pointer-events:none;
+    background:radial-gradient(circle at 35% 30%,#ffe49a,var(--gold) 60%,#b8860b); box-shadow:0 0 14px #ffc83daa}
+
+  /* ============ TRUST STRIP ============ */
+  .trust{display:flex; gap:26px; flex-wrap:wrap; justify-content:center; margin-top:40px; padding-top:22px; border-top:1px solid var(--line)}
+  .trust div{font-size:11px; color:var(--muted); letter-spacing:.08em; display:flex; align-items:center; gap:8px}
+  .trust .k{color:var(--green)}
+  .links{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:26px}
+  .links a{color:var(--muted); font-size:12px; letter-spacing:.04em; text-decoration:none; display:flex; align-items:center; gap:7px; padding:8px 14px; border:1px solid var(--line); border-radius:999px; transition:.2s}
+  .links a:hover{color:var(--ink); border-color:var(--line-2); box-shadow:var(--glow) #8b6cff22; transform:translateY(-1px)}
+  .links a.soon{opacity:.45; cursor:default} .links a.soon:hover{transform:none; box-shadow:none; color:var(--muted); border-color:var(--line)}
+  .links .lbl{width:100%; text-align:center; font-size:9px; letter-spacing:.2em; color:var(--faint); margin-bottom:2px}
+  .wt-foot{text-align:center; color:var(--faint); font-size:10px; letter-spacing:.14em; margin-top:18px}
+
+  /* ============ MODALS (game detail + wallet) ============ */
+  .modal{position:fixed; inset:0; z-index:60; background:#05050bdd; display:none; align-items:center; justify-content:center; padding:24px}
+  .modal.on{display:flex; animation:mfade .2s}
+  @keyframes mfade{from{opacity:0}}
+  .sheet{width:100%; max-width:540px; background:var(--panel-solid); border:1px solid var(--line-2); border-radius:20px; overflow:hidden; box-shadow:0 30px 80px #000a}
+  .sheet .head{display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line)}
+  .sheet .head .nm{font-family:var(--fdisplay); font-weight:700; font-size:18px; letter-spacing:.03em}
+  .sheet .head .x{margin-left:auto; cursor:pointer; color:var(--muted); font-size:18px}
+  .sheet .head .x:hover{color:var(--ink)}
+  .b2{padding:20px}
+  .gm-screen{height:128px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; background:linear-gradient(135deg,#1b1b34,#0c0c18); position:relative; overflow:hidden}
+  .gm-screen::after{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 3px,#0000000f 3px 4px)}
+  .gm-screen .g{font-family:var(--fdisplay); font-weight:700; font-size:62px}
+  .gm-row{display:flex; gap:10px; margin:14px 0}
+  .gm-row .k{flex:1; border:1px solid var(--line); border-radius:10px; padding:9px 12px}
+  .gm-row .k .l{font-size:9px; letter-spacing:.16em; color:var(--faint)} .gm-row .k .v{font-family:var(--fdisplay); font-weight:600; margin-top:3px; font-size:14px}
+  .w-bal{font-family:var(--fdisplay); font-weight:700; font-size:34px; color:var(--gold); margin:2px 0 6px}
+  .w-line{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); font-size:13px; color:var(--muted)}
+  .w-line b{color:var(--ink)}
+  .w-tier{font-size:10px; letter-spacing:.1em; padding:3px 9px; border-radius:999px; border:1px solid var(--line-2); color:var(--free)}
+  .toggle{width:38px;height:20px;border-radius:999px;background:#2a2a44;position:relative;cursor:pointer;flex:none}
+  .toggle.on{background:var(--green)} .toggle i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s} .toggle.on i{left:20px}
+  .note2{font-size:10px;color:var(--faint);margin-top:13px;letter-spacing:.03em;line-height:1.5}
+
+  @media(max-width:680px){
+    .hero{flex-direction:column} .hero .right{width:100%; height:150px}
+    .ring .d{display:none}
+  }
+</style>
+</head>
+<body data-floor="free">
+
+  <!-- BOOT -->
+  <div id="boot">
+    <div class="boot-mark">INSERT&nbsp;<b>COIN</b></div>
+    <div class="coin-slot" id="enter"><div class="coin"></div><span>PRESS&nbsp;START</span></div>
+    <div class="boot-sub">working title · the shell <span class="blink">_</span></div>
+  </div>
+
+  <canvas id="bg"></canvas>
+  <div class="scanlines"></div>
+
+  <div class="wrap">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="logo"><span class="dot"></span>INSERT&nbsp;<b>COIN</b><span class="wt">working&nbsp;title</span></div>
+      <div class="onair"><span class="pulse"></span>ON AIR</div>
+      <div class="spacer"></div>
+      <div class="bal"><span class="c"></span>Free credits&nbsp;<b id="balnum">500</b></div>
+      <div class="btn" id="connect">CONNECT WALLET</div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="ticker"><div class="row">
+      <span class="red">🔴 ON AIR</span>
+      <span>@deathstar held <span class="hot">NERVE</span> to <span class="hot">14.2×</span> — solo survivor, took the pot</span>
+      <span class="live">1,204 playing free right now</span>
+      <span>@kira just cleared a <span class="hot">$240</span> Pulse bracket</span>
+      <span>provably fair · every round verifiable</span>
+      <span>@walt raided the table — <span class="live">+58 viewers</span> sat down</span>
+      <span class="hot">NERVE</span><span>jackpot rolling: a full table just busted</span>
+    </div></div>
+
+    <!-- RING SELECTOR -->
+    <div class="rings" id="rings">
+      <div class="ring on" data-r="free">
+        <div class="n">FLOOR 0</div><div class="t">FREE PLAY</div>
+        <div class="d">Anyone. No risk. No wallet.</div>
+      </div>
+      <div class="ring" data-r="skill">
+        <div class="n">FLOOR −1</div><div class="t">SKILL PvP</div>
+        <div class="d">Entry-fee duels & brackets.</div>
+      </div>
+      <div class="ring" data-r="wager">
+        <div class="n">FLOOR −2</div><div class="t">WAGER</div>
+        <div class="d">Provably fair. 18+. Real stakes.</div>
+      </div>
+    </div>
+    <div class="floor-note" id="floorNote">You're on the <b>free floor</b> — play anything, no coin required. Drop deeper when you're ready.</div>
+
+    <!-- HERO: NERVE -->
+    <div class="hero">
+      <div class="left">
+        <div class="tag">SIGNATURE GAME · BUILT IN-HOUSE</div>
+        <h2>NERVE</h2>
+        <p>Ante into the pot. Ride the curve as the music tightens. <b style="color:var(--ink)">Hold</b> for a bigger cut or <b style="color:var(--ink)">cash</b> before the break. Last nerve standing takes it all.</p>
+        <div class="cta">
+          <div class="btn" style="border-color:var(--gold);background:linear-gradient(180deg,#ffc83d33,#ffc83d11);color:var(--gold)" id="watchNerve">▶ WATCH LIVE TABLE</div>
+          <div class="btn" id="playNerveFree">PLAY FREE</div>
+        </div>
+      </div>
+      <div class="right">
+        <canvas id="nerveCanvas"></canvas>
+        <div class="mult" id="nerveMult">1.00×</div>
+        <div class="badge-fair">◆ PROVABLY FAIR</div>
+      </div>
+    </div>
+
+    <!-- FLOOR / CABINETS -->
+    <div class="floor" id="floor"></div>
+
+    <!-- TRUST -->
+    <div class="trust">
+      <div><span class="k">◆</span> Provably fair — verify every round</div>
+      <div><span class="k">◆</span> Server-authoritative — cheat-proof by design</div>
+      <div><span class="k">◆</span> You own your play — free, always</div>
+    </div>
+    <div class="links">
+      <div class="lbl">PLAY OUR LIVE GAMES</div>
+      <a href="https://stakit.app" target="_blank" rel="noopener">▤ Stak</a>
+      <a href="https://clutchpbcfo.github.io/pulse" target="_blank" rel="noopener">⟁ Pulse</a>
+      <a href="https://clutchpbcfo.github.io/gmbit" target="_blank" rel="noopener">♞ GMBit</a>
+      <a href="../nerve/index.html">◈ NERVE</a>
+      <a href="https://clutchpbcfo.github.io/reachfi" target="_blank" rel="noopener">◉ REACHFI</a>
+      <a href="https://x.com/ClutchPBCFO" target="_blank" rel="noopener">𝕏 @ClutchPBCFO</a>
+    </div>
+    <div class="wt-foot">SHELL PROTOTYPE · NAME & BRANDING ARE PLACEHOLDERS · GAME LINKS ARE LIVE</div>
+  </div>
+
+  <!-- GAME DETAIL MODAL -->
+  <div class="modal" id="gameModal"><div class="sheet">
+    <div class="head"><div class="nm" id="gmName">GAME</div><div class="x" id="gmX">✕</div></div>
+    <div class="b2">
+      <div class="gm-screen"><div class="g" id="gmGlyph">◈</div></div>
+      <div id="gmDesc" style="color:var(--muted);font-size:13px"></div>
+      <div class="gm-row">
+        <div class="k"><div class="l">PLAYERS</div><div class="v" id="gmPlayers">—</div></div>
+        <div class="k"><div class="l">RINGS</div><div class="v" id="gmRings">—</div></div>
+        <div class="k"><div class="l">STATUS</div><div class="v" id="gmStatus">—</div></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <div class="btn" id="gmPlay" style="flex:1;text-align:center;border-color:var(--gold);color:var(--gold);background:linear-gradient(180deg,#ffc83d22,#ffc83d11)">▶ PLAY</div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- WALLET / PROFILE MODAL -->
+  <div class="modal" id="walletModal"><div class="sheet">
+    <div class="head"><div class="nm">WALLET <span style="font-family:var(--fmono);font-size:9px;color:var(--faint);letter-spacing:.16em">· PROFILE</span></div><div class="x" id="wX">✕</div></div>
+    <div class="b2">
+      <div class="l" style="font-size:10px;letter-spacing:.16em;color:var(--faint)">FREE CREDITS</div>
+      <div class="w-bal" id="wBal">500</div>
+      <div class="w-line"><span>Cash balance</span><span><b>$0.00</b> — connect wallet to deposit</span></div>
+      <div class="w-line"><span>KYC tier</span><span class="w-tier">ANON · free play</span></div>
+      <div class="w-line"><span>Region</span><span><b>auto</b> · free everywhere</span></div>
+      <div class="w-line"><span>Daily deposit limit</span><span><b>$100</b> · responsible play</span></div>
+      <div class="w-line" style="border:none"><span>Spend reminders</span><span class="toggle on" id="rgToggle"><i></i></span></div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <div class="btn" id="wDep" style="flex:1;text-align:center">DEPOSIT</div>
+        <div class="btn" id="wWd" style="flex:1;text-align:center;border-color:var(--line-2);background:none;color:var(--muted)">WITHDRAW</div>
+      </div>
+      <div class="note2">Cash, KYC tiers, region and limits are resolved by the spine's wrapper/geofence engine. The shell shows the model — deposits are stubbed in the prototype.</div>
+    </div>
+  </div></div>
+
+<script>
+/* ============ GAME DATA ============ */
+const GAMES = [
+  {key:"PULSE", glyph:"⟁", color:"#6FE3FF", rings:["free","skill"], players:"1.2k", tag:"REFLEX", status:"LIVE", url:"https://clutchpbcfo.github.io/pulse"},
+  {key:"GMBIT", glyph:"♞", color:"#8B6CFF", rings:["free","skill"], players:"640", tag:"CHESS · 3D", status:"LIVE", url:"https://clutchpbcfo.github.io/gmbit"},
+  {key:"STAK",  glyph:"▤", color:"#37D58C", rings:["free","skill"], players:"880", tag:"STACK · iOS", status:"LIVE", url:"https://stakit.app"},
+  {key:"SPADES",glyph:"♠", color:"#FF5FA2", rings:["free","skill","wager"], players:"410", tag:"CARD ROOM", status:"SOON", url:null},
+  {key:"NERVE", glyph:"◈", color:"#FFC83D", rings:["free","wager"], players:"2.0k", tag:"SIGNATURE", status:"LIVE", url:"../nerve/index.html"},
+  {key:"POKER", glyph:"♣", color:"#FF4D67", rings:["wager"], players:"—", tag:"HOLD'EM · OMAHA", status:"PHASE 2", url:null},
+];
+
+const floorEl = document.getElementById('floor');
+function renderFloor(active){
+  floorEl.innerHTML = '';
+  GAMES.forEach(g=>{
+    const avail = g.rings.includes(active);
+    const cab = document.createElement('div');
+    cab.className = 'cab' + (avail ? '' : ' dim');
+    cab.innerHTML = `
+      <div class="screen"><div class="glyph" style="color:${g.color};text-shadow:0 0 26px ${g.color}66">${g.glyph}</div></div>
+      <div class="body">
+        <div class="name">${g.key}
+          <span class="realbadge"><span class="rb"></span>PLAYING FOR REAL</span>
+        </div>
+        <div class="meta"><span class="live-dot" style="${g.status==='LIVE'?'':'background:#55557a;box-shadow:none'}"></span>
+          ${g.status==='LIVE'? g.players+' playing' : g.status} <span class="tagpill">${g.tag}</span></div>
+        <div class="actions">
+          <div class="mini free">▶ PLAY FREE</div>
+          ${ (active!=='free' && g.rings.includes(active)) ?
+             `<div class="mini coin"><span class="ic"></span>INSERT COIN</div>` : '' }
+        </div>
+        <div class="stakes">
+          <span class="chip">$1</span><span class="chip">$5</span><span class="chip">$25</span><span class="chip">$100</span>
+        </div>
+        <div class="lock">▰ FREE-FLOOR ONLY HERE · DROP DEEPER TO STAKE</div>
+      </div>`;
+    // interactions
+    const scr = cab.querySelector('.screen'); scr.style.cursor='pointer'; scr.onclick = ()=> openGame(g);
+    const freeBtn = cab.querySelector('.mini.free');
+    if(freeBtn) freeBtn.onclick = ()=>{ cab.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:160}); openURL(g); };
+    const coinBtn = cab.querySelector('.mini.coin');
+    if(coinBtn) coinBtn.onclick = (e)=> insertCoin(e, cab);
+    floorEl.appendChild(cab);
+  });
+}
+
+/* ============ INSERT COIN (the signature moment) ============ */
+function insertCoin(e, cab){
+  const slot = cab.querySelector('.screen').getBoundingClientRect();
+  const start = e.target.getBoundingClientRect();
+  const coin = document.createElement('div');
+  coin.className='dropcoin';
+  coin.style.left = start.left + start.width/2 - 11 + 'px';
+  coin.style.top  = start.top - 6 + 'px';
+  document.body.appendChild(coin);
+  const dx = (slot.left + slot.width/2 - 11) - (start.left + start.width/2 - 11);
+  coin.animate([
+    {transform:'translate(0,0) rotateY(0)', opacity:1},
+    {transform:`translate(${dx*0.4}px,-26px) rotateY(180deg)`, opacity:1, offset:.3},
+    {transform:`translate(${dx}px,${slot.top - start.top + 30}px) rotateY(900deg)`, opacity:.2}
+  ],{duration:560, easing:'cubic-bezier(.4,0,.5,1)'}).onfinish = ()=>{
+    coin.remove();
+    cab.classList.add('live-stakes');
+    cab.animate([{filter:'brightness(2.2)'},{filter:'brightness(1)'}],{duration:420});
+    spendCredits(5);
+  };
+}
+let bal = 500;
+function spendCredits(n){ /* demo: free credits act as the in-game coin */
+  bal = Math.max(0, bal-n); document.getElementById('balnum').textContent = bal;
+}
+
+/* ============ RING / FLOOR SWITCHING ============ */
+const notes = {
+  free:'You\'re on the <b>free floor</b> — play anything, no coin required. Drop deeper when you\'re ready.',
+  skill:'<b>Skill floor</b> — entry-fee duels & brackets. Pure skill, geofenced. Insert a coin to enter a match.',
+  wager:'<b>Wager floor</b> — provably-fair real stakes, 18+, licensed. NERVE, the card room, originals.'
+};
+const accents = {free:'var(--free)', skill:'var(--skill)', wager:'var(--wager)'};
+document.querySelectorAll('.ring').forEach(r=>{
+  r.onclick = ()=>{
+    const k = r.dataset.r;
+    document.querySelectorAll('.ring').forEach(x=>x.classList.remove('on'));
+    r.classList.add('on');
+    document.body.dataset.floor = k;
+    document.documentElement.style.setProperty('--accent', accents[k]);
+    document.getElementById('floorNote').innerHTML = notes[k];
+    renderFloor(k);
+    targetIntensity = k==='free'?0.6 : k==='skill'?1.0 : 1.5;
+  };
+});
+
+/* ============ BOOT ============ */
+document.getElementById('enter').onclick = ()=>{
+  document.getElementById('boot').classList.add('off');
+};
+
+/* ============ REACTIVE BACKGROUND ============ */
+const bg = document.getElementById('bg'); const bx = bg.getContext('2d');
+let W,H, dots=[]; let intensity=0.6, targetIntensity=0.6;
+function sizeBg(){ W=bg.width=innerWidth; H=bg.height=innerHeight;
+  dots = Array.from({length:70},()=>({x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*0.3, vy:(Math.random()-.5)*0.3, r:Math.random()*1.6+0.4})); }
+sizeBg(); addEventListener('resize',sizeBg);
+function floorColor(){ const f=document.body.dataset.floor;
+  return f==='wager'? '255,200,61' : f==='skill'? '255,95,162' : '111,227,255'; }
+function tick(){
+  intensity += (targetIntensity-intensity)*0.04;
+  bx.clearRect(0,0,W,H);
+  const c = floorColor();
+  // grid
+  bx.strokeStyle=`rgba(${c},${0.04*intensity})`; bx.lineWidth=1;
+  const g=46; for(let x=0;x<W;x+=g){bx.beginPath();bx.moveTo(x,0);bx.lineTo(x,H);bx.stroke();}
+  for(let y=0;y<H;y+=g){bx.beginPath();bx.moveTo(0,y);bx.lineTo(W,y);bx.stroke();}
+  // dots
+  dots.forEach(d=>{ d.x+=d.vx*intensity; d.y+=d.vy*intensity;
+    if(d.x<0)d.x=W; if(d.x>W)d.x=0; if(d.y<0)d.y=H; if(d.y>H)d.y=0;
+    bx.beginPath(); bx.arc(d.x,d.y,d.r,0,7); bx.fillStyle=`rgba(${c},${0.5*intensity})`; bx.fill(); });
+  requestAnimationFrame(tick);
+}
+tick();
+
+/* ============ NERVE HERO CURVE ============ */
+const nc = document.getElementById('nerveCanvas'); const ncx = nc.getContext('2d');
+let nW,nH, t0=performance.now(), mult=1, breakAt=3+Math.random()*9;
+function sizeN(){ const r=nc.getBoundingClientRect(); nc.width=r.width; nc.height=r.height; nW=r.width; nH=r.height; }
+function nerve(){
+  if(!nW){sizeN();}
+  const el=performance.now(); const t=(el-t0)/1000;
+  mult = Math.exp(0.16*t);
+  ncx.clearRect(0,0,nW,nH);
+  // curve
+  ncx.beginPath();
+  for(let i=0;i<=60;i++){ const tt=t*i/60; const m=Math.exp(0.16*tt);
+    const x=(i/60)*nW; const y=nH-(Math.min(m,breakAt)/breakAt)*(nH-18)-10;
+    i?ncx.lineTo(x,y):ncx.moveTo(x,y); }
+  const grad=ncx.createLinearGradient(0,nH,0,0); grad.addColorStop(0,'#ffc83d22'); grad.addColorStop(1,'#ffc83d');
+  ncx.strokeStyle=grad; ncx.lineWidth=3; ncx.shadowColor='#ffc83d'; ncx.shadowBlur=12; ncx.stroke(); ncx.shadowBlur=0;
+  document.getElementById('nerveMult').textContent = Math.min(mult,breakAt).toFixed(2)+'×';
+  if(mult>=breakAt){ // break flash then reset
+    ncx.fillStyle='rgba(255,77,103,.18)'; ncx.fillRect(0,0,nW,nH);
+    t0=performance.now(); breakAt=3+Math.random()*9;
+  }
+  requestAnimationFrame(nerve);
+}
+addEventListener('resize',sizeN);
+setTimeout(()=>{ sizeN(); nerve(); }, 100);
+document.getElementById('watchNerve').onclick=()=>location.href='../nerve/index.html';
+document.getElementById('playNerveFree').onclick=()=>location.href='../nerve/index.html';
+document.getElementById('connect').onclick=function(){ this.textContent='● CONNECTED'; this.style.borderColor='var(--green)'; this.style.color='var(--green)'; };
+
+/* ============ LIVE-FEEL: nudge the balance / counts ============ */
+/* ============ MODALS (game detail + wallet) ============ */
+const DESC={
+  PULSE:'One-tap reflex. The hook — free top-of-funnel, skill-PvP ready, server-authoritative anti-cheat already shipped.',
+  GMBIT:'3D crypto chess. Premium skill + spectacle. Online 1v1 PvP + clocks, live in production.',
+  STAK:'Stack to the beat. Async tournaments and daily runs — the retention loop.',
+  SPADES:'Social card game — the on-ramp into the card room and Ring 2.',
+  NERVE:'Signature game. Hold the rising curve, cash before the break, last nerve takes the pot. Same game free or for real.',
+  POKER:"Hold'em & Omaha — the Ring-2 anchor. Phase 2; earn it."
+};
+function openURL(g){ if(!g||!g.url) return false; if(g.url.indexOf('http')===0) window.open(g.url,'_blank'); else location.href=g.url; return true; }
+function openGame(g){
+  document.getElementById('gmName').textContent=g.key;
+  const gl=document.getElementById('gmGlyph'); gl.textContent=g.glyph; gl.style.color=g.color; gl.style.textShadow='0 0 30px '+g.color+'66';
+  document.getElementById('gmDesc').textContent=DESC[g.key]||'';
+  document.getElementById('gmPlayers').textContent = g.status==='LIVE'? g.players+' now' : g.status;
+  document.getElementById('gmRings').textContent = g.rings.map(r=>({free:'FREE',skill:'SKILL',wager:'WAGER'}[r])).join(' · ');
+  document.getElementById('gmStatus').textContent=g.status;
+  const play=document.getElementById('gmPlay');
+  if(g.url){ play.style.opacity=1; play.textContent = g.key==='NERVE'?'▶ PLAY NERVE':'▶ PLAY '+g.key+' (live)'; play.onclick=()=>openURL(g); }
+  else if(g.status==='LIVE'){ play.style.opacity=1; play.textContent='▶ PLAY FREE'; play.onclick=()=>play.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:160}); }
+  else { play.style.opacity=.5; play.textContent=g.status+' — not yet'; play.onclick=null; }
+  document.getElementById('gameModal').classList.add('on');
+}
+document.getElementById('gmX').onclick=()=>document.getElementById('gameModal').classList.remove('on');
+document.getElementById('gameModal').onclick=e=>{ if(e.target.id==='gameModal')e.currentTarget.classList.remove('on'); };
+function openWallet(){ document.getElementById('wBal').textContent=bal; document.getElementById('walletModal').classList.add('on'); }
+document.getElementById('wX').onclick=()=>document.getElementById('walletModal').classList.remove('on');
+document.getElementById('walletModal').onclick=e=>{ if(e.target.id==='walletModal')e.currentTarget.classList.remove('on'); };
+document.getElementById('rgToggle').onclick=function(){ this.classList.toggle('on'); };
+document.querySelector('.bal').style.cursor='pointer';
+document.querySelector('.bal').onclick=openWallet;
+
+renderFloor('free');
+setInterval(()=>{ document.querySelector('.onair .pulse').style.opacity = Math.random()>.5?'1':'.6'; },900);
+</script>
+</body>
+</html>
