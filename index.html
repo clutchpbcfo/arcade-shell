@@ -211,16 +211,15 @@
 <body data-floor="free">
 <div id="icintro-splash" style="position:fixed;inset:0;z-index:2147483600;background:#08080F;display:flex;align-items:center;justify-content:center;overflow:hidden">
   <video id="icintro-vid" src="ic-intro.mp4" autoplay muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;background:#08080F"></video>
-  <button id="icintro-sound" style="position:absolute;bottom:26px;left:26px;padding:10px 18px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.4);color:#fff;font:600 14px system-ui,sans-serif;letter-spacing:1px;cursor:pointer;opacity:.7">&#128266; SOUND</button>
   <button id="icintro-skip" style="position:absolute;bottom:26px;right:26px;padding:10px 20px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.4);color:#fff;font:600 14px system-ui,sans-serif;letter-spacing:1px;cursor:pointer">SKIP &#9654;</button>
 </div>
 <script>
 (function(){var o=document.getElementById('icintro-splash');if(!o)return;var v=document.getElementById('icintro-vid'),sk=document.getElementById('icintro-skip'),sd=document.getElementById('icintro-sound');
 function end(){if(!o)return;var x=o;o=null;x.style.transition='opacity .6s ease';x.style.opacity='0';setTimeout(function(){if(x&&x.parentNode)x.parentNode.removeChild(x);},650);try{sessionStorage.setItem('icintroSeen','1');}catch(e){}}
 try{if(sessionStorage.getItem('icintroSeen')){if(o.parentNode)o.parentNode.removeChild(o);return;}}catch(e){}
-if(v){v.addEventListener('ended',end);v.addEventListener('error',end);var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
+if(v){v.addEventListener('ended',end);v.addEventListener('error',end);v.muted=true;var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}
 if(sk)sk.addEventListener('click',end);
-if(sd)sd.addEventListener('click',function(){if(v){v.muted=!v.muted;this.style.opacity=v.muted?'.7':'1';if(!v.muted){v.play&&v.play();}}});
+
 setTimeout(end,11000);})();
 </script>
 
