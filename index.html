@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>INSERT COIN — Arcade Shell (working title)</title>
+<title>INSERT COIN — Free. Skill. Wager.</title>
+<meta name="description" content="INSERT COIN — a skill arcade with stakes. Play free or ante up across NIL, PULSE, NERVE, ROOK and STAK. Three tiers: Free, Skill, Wager." />
+<meta name="theme-color" content="#08080F" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta property="og:title" content="INSERT COIN — Free. Skill. Wager." />
+<meta property="og:description" content="A skill arcade with stakes. Five games, three tiers, one coin." />
+<meta property="og:image" content="https://clutchpbcfo.github.io/arcade-shell/og.png" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://clutchpbcfo.github.io/arcade-shell/og.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -215,9 +226,10 @@ setTimeout(end,11000);})();
 
   <!-- BOOT -->
   <div id="boot">
+    <img src="host-bot.png" alt="" onerror="this.style.display='none'" style="width:clamp(116px,23vw,176px); margin-bottom:12px; filter:drop-shadow(0 16px 36px rgba(0,0,0,.55)) drop-shadow(0 0 34px rgba(139,108,255,.28)); animation:throb 3.4s ease-in-out infinite" />
     <div class="boot-mark">INSERT&nbsp;<b>COIN</b></div>
     <div class="coin-slot" id="enter"><div class="coin"></div><span>PRESS&nbsp;START</span></div>
-    <div class="boot-sub">working title · the shell <span class="blink">_</span></div>
+    <div class="boot-sub">FREE · SKILL · WAGER&nbsp;<span class="blink">_</span></div>
   </div>
 
   <canvas id="bg"></canvas>
@@ -226,7 +238,7 @@ setTimeout(end,11000);})();
   <div class="wrap">
     <!-- TOP BAR -->
     <div class="topbar">
-      <div class="logo"><span class="dot"></span>INSERT&nbsp;<b>COIN</b><span class="wt">working&nbsp;title</span></div>
+      <div class="logo"><span class="dot"></span>INSERT&nbsp;<b>COIN</b></div>
       <div class="onair"><span class="pulse"></span>ON AIR</div>
       <div class="spacer"></div>
       <div class="bal"><span class="c"></span>Free credits&nbsp;<b id="balnum">500</b></div>
