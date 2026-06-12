@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>REACHFI × MBIT · Partnership Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b; --bg-1:#101012; --bg-2:#16161a; --bg-3:#1d1d22;
+  --border:#232328; --border-bright:#32323a;
+  --text:#f5f5f2; --dim:#9a9aa2; --faint:#56565f;
+  --onair:#ff3b35; --amber:#ffb000; --cyan:#36e0ff; --green:#37d58c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html,body{background:var(--bg);color:var(--text);font-family:'Archivo',system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:radial-gradient(ellipse 1400px 700px at 50% -200px, rgba(245,245,242,.05), transparent 60%),radial-gradient(ellipse 1000px 500px at 100% 30%, rgba(255,176,0,.05), transparent 70%),var(--bg)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0px, rgba(255,255,255,.012) 1px, transparent 1px, transparent 3px);mix-blend-mode:overlay;opacity:.5}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Space Mono',monospace}
+.container{max-width:1180px;margin:0 auto;padding:0 6vw}
+.amber{color:var(--amber)} .cyan{color:var(--cyan)}
+
+/* topbar */
+.topbar{border-bottom:1px solid var(--border);padding:14px 0;background:rgba(10,10,11,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:100}
+.topbar .container{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.tb-mark{font-weight:900;letter-spacing:.04em;font-size:15px}
+.tb-tag{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+@media(max-width:640px){.tb-tag{display:none}}
+
+/* hero */
+.hero{padding:84px 0 56px;text-align:left}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:30px;flex-wrap:wrap}
+.onair-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,59,53,.45);color:var(--onair);padding:5px 12px;border-radius:100px;font-size:10.5px;letter-spacing:.2em}
+.onair-pill .blip{width:7px;height:7px;border-radius:50%;background:var(--onair);box-shadow:0 0 10px var(--onair);animation:blip .9s steps(1) infinite}
+@keyframes blip{0%,50%{opacity:1}51%,100%{opacity:.15}}
+.lockup{font-weight:900;font-size:clamp(38px,7.2vw,84px);line-height:1.02;letter-spacing:.015em;margin-bottom:26px}
+.lockup .x{color:var(--faint);font-weight:400;padding:0 .12em}
+.lockup .mbit{color:var(--amber)}
+.hero-sub{max-width:760px;font-size:clamp(17px,2vw,21px);color:var(--dim)}
+.hero-sub strong{color:var(--text)}
+.hero-ctas{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap}
+.btn{display:inline-block;padding:14px 26px;border-radius:6px;font-weight:700;font-size:15px;letter-spacing:.02em;transition:transform .15s,border-color .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--amber);color:#0a0a0b}
+.btn-ghost{border:1px solid var(--border-bright);color:var(--text)}
+.btn-ghost:hover{border-color:var(--amber)}
+
+/* marquee */
+.marquee{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:13px 0;background:var(--bg-1)}
+.marquee-track{display:flex;gap:46px;white-space:nowrap;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:var(--dim);animation:marq 26s linear infinite;width:max-content}
+.marquee-track span{display:flex;align-items:center;gap:46px}
+.marquee-track .d{width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* sections */
+.section{padding:74px 0 30px}
+.tag{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+h2{font-weight:900;font-size:clamp(28px,4.4vw,46px);line-height:1.08;letter-spacing:.01em;margin-bottom:18px}
+.lede{max-width:740px;color:var(--dim);font-size:17.5px}
+.lede strong{color:var(--text)}
+
+/* gap cards */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:40px}
+.gapcard{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:28px 26px}
+.gapcard .k{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.gapcard .v{font-weight:800;font-size:24px;margin-bottom:10px;letter-spacing:.01em}
+.gapcard p{color:var(--dim);font-size:14.5px}
+
+/* channels */
+.net-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin-top:42px}
+.ch{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:24px 22px;transition:border-color .2s,transform .2s}
+.ch:hover{border-color:var(--border-bright);transform:translateY(-3px)}
+.ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ch-freq{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)}
+.ch-ver{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);border:1px solid rgba(55,213,140,.35);padding:2px 8px;border-radius:100px}
+.ch-handle{font-weight:800;font-size:21px;letter-spacing:.01em;margin-bottom:6px}
+.ch-handle a:hover{color:var(--amber)}
+.ch-niche{color:var(--faint);font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.06em;margin-bottom:18px}
+.ch-count{display:flex;align-items:baseline;gap:8px}
+.ch-count .n{font-weight:900;font-size:26px}
+.ch-count .l{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+.ch.special{background:linear-gradient(135deg, rgba(54,224,255,.07), transparent 60%);border-color:rgba(54,224,255,.3)}
+.ch.special .ch-freq{color:var(--cyan)}
+.ch.special .ch-handle{color:var(--cyan)}
+.ch.special p{color:var(--dim);font-size:14px;margin-top:6px}
+.ch.fullnet{background:linear-gradient(135deg, rgba(255,176,0,.07), transparent 60%);border-color:rgba(255,176,0,.3)}
+.ch.fullnet .ch-handle{color:var(--amber)}
+.ch.fullnet p{color:var(--dim);font-size:14px;margin-top:6px}
+
+/* games */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px;margin-top:42px}
+.game{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;display:flex;flex-direction:column}
+.game:hover{border-color:var(--border-bright);transform:translateY(-3px)}
+.game .art{aspect-ratio:1200/630;width:100%;object-fit:cover;display:block;border-bottom:1px solid var(--border);background:var(--bg-3)}
+.game .meta{padding:18px 18px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
+.game .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.game .gname{font-weight:800;font-size:17px;letter-spacing:.02em}
+.chip{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid}
+.game .status{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.game .status.live{color:var(--green)}
+.game .status a{color:var(--green);border-bottom:1px dotted rgba(55,213,140,.5)}
+.arcade-band{margin-top:26px;background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:26px 28px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.arcade-band img{height:30px;display:block}
+.arcade-band p{color:var(--dim);font-size:14.5px;flex:1;min-width:240px}
+.arcade-band p strong{color:var(--text)}
+
+/* deliverables */
+.dlist{margin-top:38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+.dl{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start}
+.dl .num{font-family:'Space Mono',monospace;color:var(--amber);font-size:12px;letter-spacing:.1em;padding-top:3px}
+.dl .body strong{display:block;font-size:16px;margin-bottom:4px}
+.dl .body span{color:var(--dim);font-size:14px}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:42px}
+.tier{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:30px 28px;display:flex;flex-direction:column;position:relative}
+.tier.featured{border-color:rgba(255,176,0,.5);background:linear-gradient(180deg, rgba(255,176,0,.05), var(--bg-2) 45%)}
+.tier .badge{position:absolute;top:-11px;left:26px;background:var(--amber);color:#0a0a0b;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;padding:4px 11px;border-radius:100px}
+.tier .t-num{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
+.tier h3{font-weight:900;font-size:25px;margin-bottom:4px}
+.tier .t-line{color:var(--amber);font-family:'Space Mono',monospace;font-size:12.5px;letter-spacing:.06em;margin-bottom:18px}
+.tier ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+.tier li{color:var(--dim);font-size:14.5px;padding-left:18px;position:relative}
+.tier li::before{content:'▸';position:absolute;left:0;color:var(--amber);font-size:11px;top:3px}
+.tier .t-foot{margin-top:auto;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border-top:1px solid var(--border);padding-top:16px}
+.tiers-note{margin-top:20px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.05em;color:var(--faint);max-width:780px}
+
+/* safety */
+.safety{margin-top:40px;background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:10px;padding:30px 32px}
+.safety .s-tag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.safety p{color:var(--dim);font-size:15.5px;max-width:860px}
+.safety p strong{color:var(--text)}
+.safety p + p{margin-top:12px}
+
+/* receipts */
+.receipts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:38px}
+.rc{border:1px solid var(--border);border-radius:10px;padding:24px;background:var(--bg-1)}
+.rc .mono{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;display:block}
+.rc p{font-size:15px;color:var(--dim)}
+.rc p strong{color:var(--text)}
+
+/* outro */
+.outro{padding:88px 0 70px;text-align:center;border-top:1px solid var(--border);margin-top:80px}
+.outro h2{margin-bottom:14px}
+.outro p{color:var(--dim);max-width:620px;margin:0 auto 34px}
+.footer{border-top:1px solid var(--border);padding:30px 0 44px}
+.footer .container{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.f-mark{font-weight:900;letter-spacing:.04em}
+.f-note{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="tb-mark">REACH<span class="amber">/</span>FI</div>
+    <div class="tb-tag">Private proposal · Prepared for mBit Casino · June 2026</div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="onair-pill"><span class="blip"></span>ON AIR</span>
+      <span>Crypto's owned broadcast network</span>
+    </div>
+    <h1 class="lockup">REACH<span class="amber">/</span>FI <span class="x">×</span> <span class="mbit">MBIT</span></h1>
+    <p class="hero-sub"><strong>You bring twelve years of brand trust. We bring the owned broadcast network.</strong> Six channels, 1M+ combined followers, a 30-deep amplifier crew, a live trading show, and an arcade with its own App Store footprint. One partner. Turnkey. Fully measurable.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="https://t.me/Novex_Clutch" target="_blank" rel="noopener noreferrer">Book the call</a>
+      <a class="btn btn-ghost" href="https://reachfi.network" target="_blank" rel="noopener noreferrer">See the live network</a>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>1M+ COMBINED REACH <span class="d"></span> 6 OWNED CHANNELS <span class="d"></span> 30+ AMPLIFIER ACCOUNTS <span class="d"></span> EX-RAINBET CREATOR <span class="d"></span> VERIFIED ANALYTICS <span class="d"></span> NO MIDDLEMEN <span class="d"></span></span>
+    <span>1M+ COMBINED REACH <span class="d"></span> 6 OWNED CHANNELS <span class="d"></span> 30+ AMPLIFIER ACCOUNTS <span class="d"></span> EX-RAINBET CREATOR <span class="d"></span> VERIFIED ANALYTICS <span class="d"></span> NO MIDDLEMEN <span class="d"></span></span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">01 / The Opportunity</div>
+      <h2>The trust is yours.<br>The lane is <span class="amber">open.</span></h2>
+      <p class="lede">mBit has been live since 2014. Twelve years earns a kind of trust younger casinos can't fake. But the creator side of crypto gaming is where the market moved, and right now that lane belongs to your competitors. It doesn't have to.</p>
+    </div>
+    <div class="grid3">
+      <div class="gapcard reveal"><div class="k">What you have</div><div class="v">Since 2014</div><p>One of the longest-running crypto casinos. Real brand equity, real player trust, a community already living on Telegram.</p></div>
+      <div class="gapcard reveal"><div class="k">What moved</div><div class="v">The creator lane</div><p>Stake, Rainbet and Roobet own creator distribution today. Sponsored streams and creator networks are where deposits come from now.</p></div>
+      <div class="gapcard reveal"><div class="k">What this is</div><div class="v">One partner</div><p>An owned broadcast network, a returning sponsored creator, and a relaunch season with your name on it. Measured first-party.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">02 / The Network</div>
+      <h2>Six channels. One <span class="amber">network.</span></h2>
+      <p class="lede">Owned and operated, not rented. Follower counts are the floor: a 30-deep crew of subscribed accounts piles into every broadcast, so <strong>impressions outrun the follower math</strong>. Verified first-party analytics on every campaign.</p>
+    </div>
+    <div class="net-grid">
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.01 · Flagship</span><span class="ch-ver">Verified</span></div><div class="ch-handle"><a href="https://x.com/Rothmus" target="_blank" rel="noopener noreferrer">@Rothmus</a></div><div class="ch-niche">Liberty · Macro · Memes</div><div class="ch-count"><span class="n">668K</span><span class="l">Followers</span></div></div>
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.02 · Viral</span><span class="ch-ver">Verified</span></div><div class="ch-handle"><a href="https://x.com/WomenBeingAwful" target="_blank" rel="noopener noreferrer">@WomenBeingAwful</a></div><div class="ch-niche">Viral · Culture · Memes</div><div class="ch-count"><span class="n">363K</span><span class="l">Followers</span></div></div>
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.03 · Trading</span><span class="ch-ver">Verified</span></div><div class="ch-handle"><a href="https://x.com/ClutchPBCFO" target="_blank" rel="noopener noreferrer">@ClutchPBCFO</a></div><div class="ch-niche">Trading · TA · Trade Talk Pod</div><div class="ch-count"><span class="n">14K</span><span class="l">Followers</span></div></div>
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.04 · NFT</span><span class="ch-ver">Verified</span></div><div class="ch-handle"><a href="https://x.com/HermetixWeb3" target="_blank" rel="noopener noreferrer">@HermetixWeb3</a></div><div class="ch-niche">NFT · Remilia · Culture</div><div class="ch-count"><span class="n">6K</span><span class="l">Followers</span></div></div>
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.05 · DEX</span></div><div class="ch-handle"><a href="https://x.com/NovexFi" target="_blank" rel="noopener noreferrer">@NovexFi</a></div><div class="ch-niche">DeFi · Perps · Novex Terminal</div><div class="ch-count"><span class="n">733</span><span class="l">Followers</span></div></div>
+      <div class="ch reveal"><div class="ch-top"><span class="ch-freq">CH.06 · Foundation</span></div><div class="ch-handle"><a href="https://x.com/TheClutchFDN" target="_blank" rel="noopener noreferrer">@TheClutchFDN</a></div><div class="ch-niche">Jobs · Charity · Podcasts</div><div class="ch-count"><span class="n">578</span><span class="l">Followers</span></div></div>
+      <div class="ch special reveal"><div class="ch-top"><span class="ch-freq">+ The Crew</span></div><div class="ch-handle">30+</div><div class="ch-niche">Amplifier accounts · always around</div><p>A standing crew of allied accounts rides every broadcast: replies, reposts, quote chains. Followers are the floor. Impressions are the product.</p></div>
+      <div class="ch fullnet reveal"><div class="ch-top"><span class="ch-freq" style="color:var(--amber)">▸ Full Network</span></div><div class="ch-handle">1M+</div><div class="ch-niche">Combined reach · all channels</div><p>Mass reach meets buyer intent. Big channels put you in front of everyone; the trading and DeFi channels put you in front of wallets that deposit.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">03 / Off-Air Assets</div>
+      <h2>We ship real <span class="amber">product.</span></h2>
+      <p class="lede">The network builds and operates its own games: free skill titles on verified-score rails, live on the web and on the App Store. If we can ship through Apple review, we can ship your campaign.</p>
+    </div>
+    <div class="games-grid">
+      <div class="game reveal"><img class="art" src="https://www.stakit.app/og.png" alt="STAK" loading="lazy"><div class="meta"><div class="row"><span class="gname">STAK</span><span class="chip" style="color:#37d58c;border-color:rgba(55,213,140,.4)">STACK · iOS</span></div><div class="status live"><a href="https://apps.apple.com/app/id6775574900" target="_blank" rel="noopener noreferrer">Live on the App Store</a></div></div></div>
+      <div class="game reveal"><img class="art" src="https://clutchpbcfo.github.io/pulse/og.png" alt="PULSE" loading="lazy"><div class="meta"><div class="row"><span class="gname">PULSE</span><span class="chip" style="color:#6FE3FF;border-color:rgba(111,227,255,.4)">REFLEX</span></div><div class="status">Submitted to Apple · review in progress</div></div></div>
+      <div class="game reveal"><img class="art" src="https://clutchpbcfo.github.io/fuse/d4cb892e-c7a8-4962-845b-7c2bc6ba4a26.png" alt="FUSE" loading="lazy"><div class="meta"><div class="row"><span class="gname">FUSE</span><span class="chip" style="color:#FF8A1E;border-color:rgba(255,138,30,.4)">GREED · TIMING</span></div><div class="status">Submitted to Apple · review in progress</div></div></div>
+      <div class="game reveal"><img class="art" src="https://clutchpbcfo.github.io/prism/icon-512.png" alt="PRISM" loading="lazy"><div class="meta"><div class="row"><span class="gname">PRISM</span><span class="chip" style="color:#EAF8FF;border-color:rgba(234,248,255,.4)">AIM · RICOCHET</span></div><div class="status">Next wave</div></div></div>
+    </div>
+    <div class="arcade-band reveal">
+      <img src="https://pvp.reachfi.network/wordmark.png" alt="INSERT COIN">
+      <p><strong>The arcade is sponsorship inventory.</strong> Branded cabinets, sponsored high score events, and mBit-funded bounty weekends on the live PVP floor. Verified scores, no ads, the same crypto-native audience off the clock.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">04 / What You Get Monthly</div>
+      <h2>Deliverables, not <span class="amber">promises.</span></h2>
+    </div>
+    <div class="dlist">
+      <div class="dl reveal"><span class="num">01</span><div class="body"><strong>20+ live streamed hours</strong><span>mBit integration on every session: overlay, tracked code, link placement, VOD redistribution.</span></div></div>
+      <div class="dl reveal"><span class="num">02</span><div class="body"><strong>Co-branded Telegram campaigns</strong><span>Giveaways and bonus drops into crypto-native communities on Telegram, your strongest channel.</span></div></div>
+      <div class="dl reveal"><span class="num">03</span><div class="body"><strong>Owned web placement</strong><span>Brand presence across REACHFI web and bio surfaces, on the creator side of the house.</span></div></div>
+      <div class="dl reveal"><span class="num">04</span><div class="body"><strong>Network amplification</strong><span>Relaunch content carried across six channels and the crew, structured to comply with platform rules on gambling promotion.</span></div></div>
+      <div class="dl reveal"><span class="num">05</span><div class="body"><strong>Optional arcade events</strong><span>Sponsored high score weekends on the PVP floor. Free skill games, verified scores, mBit-funded bounties.</span></div></div>
+      <div class="dl reveal"><span class="num">06</span><div class="body"><strong>First-party reporting</strong><span>Monthly performance report: FTDs, code redemptions through your Affilka program, stream hours, reach and impressions.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">05 / Three Ways In</div>
+      <h2>Pick your <span class="amber">structure.</span></h2>
+      <p class="lede">Every option is measurable from day one. Numbers are open to a short call.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier reveal">
+        <div class="t-num">Option 01</div>
+        <h3>Pilot</h3>
+        <div class="t-line">30 days · prove the traffic</div>
+        <ul>
+          <li>$3,000 flat, settled in BTC</li>
+          <li>40% revshare on tracked code</li>
+          <li>Full monthly deliverables</li>
+          <li>First-party report at day 30</li>
+        </ul>
+        <div class="t-foot">Low risk · fast start</div>
+      </div>
+      <div class="tier featured reveal">
+        <div class="badge">The anchor play</div>
+        <div class="t-num">Option 02</div>
+        <h3>Season</h3>
+        <div class="t-line">90 days · presented by mBit</div>
+        <ul>
+          <li>Monthly retainer, scoped on a call</li>
+          <li>45% revshare on tracked code</li>
+          <li>Crypto-casino exclusivity</li>
+          <li>The relaunch ships as "presented by mBit"</li>
+          <li>Arcade bounty weekend included</li>
+        </ul>
+        <div class="t-foot">Own the relaunch outright</div>
+      </div>
+      <div class="tier reveal">
+        <div class="t-num">Option 03</div>
+        <h3>Residency</h3>
+        <div class="t-line">6 months · the house deal</div>
+        <ul>
+          <li>Monthly retainer at the founding-cohort rate, locked for the term</li>
+          <li>50% revshare on tracked code</li>
+          <li>Full crypto-casino exclusivity, all six months</li>
+          <li>"Presented by mBit" across the relaunch and the season</li>
+          <li>Monthly arcade bounty weekend</li>
+          <li>Monthly performance review</li>
+        </ul>
+        <div class="t-foot">Best rate in the building</div>
+      </div>
+    </div>
+    <p class="tiers-note">These run as sponsorship terms of the network's Always-On package. The Founding 10 offer published on reachfi.network is honored here: the Residency locks that rate for the full six months.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">06 / Brand Safety</div>
+      <h2>We read the rules. Most creators <span class="cyan">don't.</span></h2>
+    </div>
+    <div class="safety reveal">
+      <div class="s-tag">The compliance edge</div>
+      <p>As of February 2026, X prohibits gambling promotion in paid partnerships, including affiliate codes and links. Slots content has been restricted on Twitch since 2022. <strong>We built this plan around the rules:</strong> live integration happens on platforms that permit casino content, conversion runs through Telegram and owned web where your community already lives, and the X network carries the show as organic content only.</p>
+      <p>Your brand never rides on a channel where the placement itself is a violation. That protects your license, and it protects the network we spent years building. <strong>Nobody is burning either one for a campaign.</strong></p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">07 / Receipts</div>
+      <h2>Why this <span class="amber">works.</span></h2>
+    </div>
+    <div class="receipts">
+      <div class="rc reveal"><span class="mono">Track record</span><p><strong>Previously sponsored by Rainbet.</strong> Clean delivery across the partnership. Returning to the category with one partner, not ten.</p></div>
+      <div class="rc reveal"><span class="mono">Audience intent</span><p><strong>Crypto-native traders.</strong> The trading show and DeFi channels reach wallets that already custody and move crypto. The profile that deposits and stays.</p></div>
+      <div class="rc reveal"><span class="mono">Measurement</span><p><strong>First-party everything.</strong> We own the channels, so reporting comes from the source. FTDs and code redemptions reconcile against your Affilka dashboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="outro">
+  <div class="container">
+    <h2>Pick a structure, or take <span class="amber">20 minutes.</span></h2>
+    <p>Reply on the email thread, or book the call direct. Verified channel analytics available either way.</p>
+    <div class="hero-ctas" style="justify-content:center">
+      <a class="btn btn-primary" href="https://t.me/Novex_Clutch" target="_blank" rel="noopener noreferrer">Book the call</a>
+      <a class="btn btn-ghost" href="https://x.com/ClutchPBCFO" target="_blank" rel="noopener noreferrer">DM @ClutchPBCFO</a>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <div class="container">
+    <div class="f-mark">REACH<span class="amber">/</span>FI</div>
+    <div class="f-note">A Clutch Foundation operation · Prepared June 2026 for the mBit Casino affiliates team</div>
+  </div>
+</div>
+
+<script>
+const io = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
