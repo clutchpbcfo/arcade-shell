@@ -32,7 +32,7 @@
 
   // ---------- public API ----------
   var Arcade = {
-    ready: ensureAccount(),
+    ready: function () { return ensureAccount(); },
     token: function () { return acct && acct.token; },
     playerId: function () { return acct && acct.playerId; },
     profile: function () { return api('/api/account'); },
@@ -153,6 +153,12 @@
     });
   }
 
+  // Opt-in gate: the widget stays completely inert (no account created, no UI, no network) unless
+  // explicitly enabled. This protects the LIVE iOS app and the Android build IN REVIEW — those
+  // web-wrapped surfaces never wake the arcade until we deliberately turn it on. Enable on the web
+  // hub with `window.REACHFI_ARCADE_ENABLED = true` (set before this script), or test with ?arcade=1.
+  var ENABLED = (window.REACHFI_ARCADE_ENABLED === true) || /[?&]arcade=1\b/.test(location.search);
+  if (!ENABLED) return;
   ensureAccount().then(function () {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
   });
